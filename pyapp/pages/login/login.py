@@ -61,8 +61,8 @@ class Page:
                                                             [
                                                                 html.Div(
                                                                     [
-                                                                        html.Label('USERNAME', className='form-control-label'),
-                                                                        dcc.Input(id=self.ids.input_username, className='form-control')
+                                                                        html.Label('USERNAME' , className='form-control-label'),
+                                                                        dcc.Input(id=self.ids.input_username, className='form-control', autoComplete="off")
                                                                     ],
                                                                     className='form-group'
                                                                 ),
@@ -91,7 +91,7 @@ class Page:
                                                                 )
 
 
-                                                            ]
+                                                            ], autoComplete="off"
                                                         )
                                                     ],
                                                     lg=12, class_name='login-form'
