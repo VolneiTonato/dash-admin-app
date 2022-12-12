@@ -57,5 +57,5 @@ def load_entities(app:Flask, args_command=None):
             elif ObjectUtil.getattr_model(args_command, 'command') == 'drop-db':
                 db.drop_all()
                 
-            print('*** commando OK')
+            print(f'*** command {ObjectUtil.getattr_model(args_command, "command")} OK')
             exit()
