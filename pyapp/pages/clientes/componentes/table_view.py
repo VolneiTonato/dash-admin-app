@@ -54,7 +54,7 @@ class TableView:
                                     [
                                         html.H2([
                                             html.Span(
-                                                "Deseja remover o consumidor "),
+                                                "Deseja remover o cliente "),
                                             html.Span(
                                                 id=self.ids.modal_question_item_selected, className="alert-link"),
                                             html.Span(" ?"),
@@ -273,16 +273,16 @@ class TableView:
             if component_ctx == self.ids.parent.store_filter_data:
                 store_page = 0
 
-            consumidores = []
+            clientes = []
 
             if store_filter:
                 store_filter = ClienteFilterDTO(**store_filter)
-                consumidores = Cliente.find_by_filter_paginator(
+                clientes = Cliente.find_by_filter_paginator(
                     store_filter, store_page)
 
             else:
-                consumidores = Cliente.find_all_paginator(store_page)
+                clientes = Cliente.find_all_paginator(store_page)
 
-            component_table = refresh_table(consumidores, store_page)
+            component_table = refresh_table(clientes, store_page)
 
             return {},  component_table
