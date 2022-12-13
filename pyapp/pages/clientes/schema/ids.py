@@ -34,7 +34,7 @@ class PageClienteIds(BaseIds):
 
     
     def __init__(self) -> None:
-        aio_id = md5(f'{__name__}-{str(PageClienteIds)}'.encode()).hexdigest()
+        aio_id = md5(f'{__name__}-{str(PageClienteIds.__name__)}'.encode()).hexdigest()
         super().__init__(aio_id, root='PageClienteAIO')
         
         
@@ -61,7 +61,7 @@ class TableViewComponentClienteIds(BaseIds):
 
     
     def __init__(self) -> None:
-        aio_id = md5(f'{__name__}-{str(PageClienteIds)}'.encode()).hexdigest()
+        aio_id = md5(f'{__name__}-{str(PageClienteIds.__name__)}'.encode()).hexdigest()
         self.parent = PageClienteIds()
         super().__init__(aio_id, root='ComponentTableViewClienteIAO')   
         
@@ -76,7 +76,7 @@ class FitroComponentClienteIds(BaseIds):
 
     
     def __init__(self) -> None:
-        aio_id = md5(f'{__name__}-{str(FitroComponentClienteIds)}'.encode()).hexdigest()
+        aio_id = md5(f'{__name__}-{str(FitroComponentClienteIds.__name__)}'.encode()).hexdigest()
         self.parent = PageClienteIds()
         super().__init__(aio_id, root='ComponentFiltroClienteIAO')        
 
@@ -94,7 +94,7 @@ class FormComponentBaseClienteIds:
 class FormComponentADDClienteIds(FormComponentBaseClienteIds, BaseIds):
     
     def __init__(self) -> None:
-        aio_id = md5(f'{__name__}-{str(FormComponentADDClienteIds)}'.encode()).hexdigest()
+        aio_id = md5(f'{__name__}-{str(FormComponentADDClienteIds.__name__)}'.encode()).hexdigest()
         self.parent = PageClienteIds()
         super().__init__(aio_id, root=f'ComponentFormADDClienteIAO')
         
@@ -102,8 +102,7 @@ class FormComponentADDClienteIds(FormComponentBaseClienteIds, BaseIds):
 class FormComponentEDITClienteIds(FormComponentBaseClienteIds, BaseIds):
 
     def __init__(self) -> None:
-        aio_id = md5(f'{__name__}-{str(FormComponentEDITClienteIds)}'.encode()).hexdigest()
-        
+        aio_id = md5(f'{__name__}-{str(FormComponentEDITClienteIds.__name__)}'.encode()).hexdigest()
         self.parent = PageClienteIds()
         
         super().__init__(aio_id, root=f'ComponentFormEDITClienteIAO')  

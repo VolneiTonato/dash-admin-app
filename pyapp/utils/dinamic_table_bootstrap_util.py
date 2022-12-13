@@ -1,9 +1,10 @@
-import dash_bootstrap_components as dbc
-from dash import html
-from flask_sqlalchemy.pagination import Pagination
-import polars as pl
-from typing import Literal,  Union
 from pyapp.utils.generic_util import ObjectUtil
+from typing import Literal,  Union
+import polars as pl
+from flask_sqlalchemy.pagination import Pagination
+from dash import html
+import dash_bootstrap_components as dbc
+
 
 class DinamicTableBootstrapUtil:
     

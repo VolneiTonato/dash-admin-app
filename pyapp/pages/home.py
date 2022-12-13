@@ -54,11 +54,18 @@ class Page:
     def layout(self, *args, **kwargs):
         
         
+        # layout = html.Div([
+        #     dbc.Row([dbc.Col(
+        #         self._create_card('header', 'title', 'this is some card text', 'this is the footer'), 
+        #         width=3, class_name='mt-5'
+        #     )]*10)
+        # ])
+        
         layout = html.Div([
             dbc.Row([dbc.Col(
-                self._create_card('header', 'title', 'this is some card text', 'this is the footer'), 
-                width=3, class_name='mt-5'
-            )]*10)
+                html.H4('Home Page'), 
+                width=12, class_name='mt-5'
+            )])
         ])
         
         return layout

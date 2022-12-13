@@ -1,12 +1,13 @@
-from datetime import timedelta
 from flask import Flask
+from datetime import timedelta
+import redis
+import argparse
 from pyapp.ext import setup_ext
 from pyapp.ext.dash import dash_app
-import redis
 from pyapp.config import get_settings
-import argparse
 
 def create_flask_app():
+    
     settings = get_settings()
     
     server = Flask(__name__)                 
@@ -31,22 +32,8 @@ def create_app(args_command=None):
     
     app = create_flask_app()   
 
-    
     setup_ext.load_extensions(app)
     
     setup_ext.load_entities(app, args_command)
-
     
-    with  app.app_context() as ctx:
-        dash_app.run(debug=True)
-        
-    
-    
-
-if __name__ == '__main__':
-    
-    parse = argparse.ArgumentParser()
-    parse.add_argument('--command', required=False)
-    args = parse.parse_args()
-
-    create_app(args)
+    return app

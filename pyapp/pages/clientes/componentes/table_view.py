@@ -20,6 +20,7 @@ class TableView:
         self.ids = TableViewComponentClienteIds()
 
         self.componentForm = Form(ctype=EnumTypeForm.EDIT)
+    
 
         self.events()
 

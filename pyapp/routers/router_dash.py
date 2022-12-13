@@ -64,7 +64,7 @@ def get_layout(key):
 def init_app(app: Flask, dash_app: Dash):
     
     settings = get_settings()
-    
+
     def url_query_string_to_dict(self, url):
             parse_data = parse.urlparse(url)
                     
@@ -170,7 +170,6 @@ def init_app(app: Flask, dash_app: Dash):
   
         def events(self):
 
-            
             @dash_app.callback(
                 [
                 Output(_ID_CONTENT, "children"),

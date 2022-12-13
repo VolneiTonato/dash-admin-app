@@ -24,7 +24,7 @@ class Form:
         
         self.type_form = ctype
         
-        if ctype == EnumTypeForm.ADD:
+        if ctype.name == EnumTypeForm.ADD.name:
             self.ids = FormComponentADDClienteIds()
         else:
             self.ids = FormComponentEDITClienteIds()
@@ -138,7 +138,7 @@ class Form:
         
         custom_outpts = [Output(self.ids.message, 'children')]
         
-        if self.type_form == EnumTypeForm.ADD:
+        if self.type_form.name == EnumTypeForm.ADD.name:
             custom_outpts.append(Output(self.ids.parent.store_form_save_data, 'data'))
         else:
             custom_outpts.append(Output(self.ids.parent.store_form_save_change_data, 'data'))

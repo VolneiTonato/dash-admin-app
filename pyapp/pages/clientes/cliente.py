@@ -26,6 +26,7 @@ class Page:
         
         
         self.componentForm = Form(EnumTypeForm.ADD)
+        
 
         self.events()
 
