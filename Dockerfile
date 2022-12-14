@@ -21,7 +21,7 @@ RUN python -m venv .venv && \
 
 
 COPY ./pyapp /app/pyapp/
-COPY ./start.sh /app/
+COPY ./start_app.sh /app/
 COPY ./main.py /app/
 
 CMD [ "sh" , "start_app.sh" ]

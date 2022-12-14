@@ -1,0 +1,4 @@
+DEV_REDIS_HOST=redis://localhost:6379
+DEV_SQLALCHEMY_DATABASE_URI=sqlite:///./data.db
+DEV_BASE_URL=/
+DEV_LIMIT=1500

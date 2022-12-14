@@ -1,11 +1,12 @@
+
 import os
 import logging
-from os import getenv, getcwd, environ
+from os import  getcwd, environ
 from functools import lru_cache
-from pydantic import BaseSettings
+from typing import Optional
 from dash_bootstrap_components import icons
 from pyapp.config import themes
-from pydantic import BaseModel as PydanticBaseModel, BaseConfig
+from pydantic import BaseModel as PydanticBaseModel, BaseConfig, BaseSettings, Field
 
 log = logging
 
@@ -14,33 +15,33 @@ class BaseModel(PydanticBaseModel):
     class Config(BaseConfig):
         arbitrary_types_allowed = True
         
+class GlobalConfig(BaseSettings):
+    """Global configurations."""
 
-class Settings(BaseSettings):
-    
-    environ['FLASK_APP'] = 'pyapp'
-    
-    project_name = 'pyapp'
-    folder_pages = 'pages'
-    folder_layouts = 'layouts'
-    extensions = ['cache',  'session', 'auth', 'database',  'dash']
+    # define global variables with the Field class
+    ENV_STATE: Optional[str] = Field(None, env="ENV_STATE")
 
-    environment: str = getenv("ENVIRONMENT", "development")
-    folder_assets: str = f'{getcwd()}/assets'
-    limit: int = int(getenv('LIMIT', 1500))
-    base_url = os.getenv('BASE_URL', '/')
-    redis_db = os.getenv('REDIS_HOST', 'redis://localhost:6379')
+    REDIS_HOST: Optional[str] = None
     
-    sqlalchemy_database_uri = 'sqlite:///./data.db'
+    PROJECT_NAME:str  = 'pyapp'
+    FOLDER_PAGES = 'pages'
+    FOLDER_LAYOUTS = 'layouts'
+    EXTENSIONS = ['cache',  'session', 'auth', 'database',  'dash']
+    FOLDER_ASSETS: str = f'{getcwd()}/assets'
+    LIMIT_QUERY: int = 1500
+    BASE_URL: str = '/'
+        
+    SQLALCHEMY_DATABASE_URI: str = None
+
+    NOME_MESES = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO']
     
-    nome_meses = ['JANEIRO','FEVEREIRO','MARÇO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO']
+    SECRET_SESSION = '26595346-edd5-4637-b9a0-507727ad4d33'
     
-    secret_session = '26595346-edd5-4637-b9a0-507727ad4d33'
+    THEME_DEFAULT = 'BOOTSTRAP'
     
-    theme_default = 'BOOTSTRAP'
+    THEME_ICON = icons.BOOTSTRAP
     
-    theme_icon = icons.BOOTSTRAP
-    
-    themes= {
+    THEMES = {
         'BOOTSTRAP': themes.BOOTSTRAP,
         'CERULEAN': themes.CERULEAN,
         'COSMO' : themes.COSMO,
@@ -69,12 +70,47 @@ class Settings(BaseSettings):
         'ZEPHYR': themes.ZEPHYR,
         'FONTAWESOME_5': themes.FONTAWESOME_5
     }
-    
+
     class Config:
+        """Loads the dotenv file."""
         env_nested_delimiter = '__'
-        
-    
+        env_file: str = ".env"
+
+
+class DevConfig(GlobalConfig):
+    """Development configurations."""
+
+    class Config:
+        env_prefix: str = "DEV_"
+        env_file: str = ".dev"
+
+
+class ProdConfig(GlobalConfig):
+    """Production configurations."""
+
+    class Config:
+        env_prefix: str = "PROD_"
+        env_file: str = ".prod"
+
+
+class FactoryConfig:
+    """Returns a config instance dependending on the ENV_STATE variable."""
+
+    def __init__(self, env_state: Optional[str]):
+        self.env_state = env_state
+
+    def __call__(self):
+        if self.env_state == "dev":
+            return DevConfig()
+
+        elif self.env_state == "prod":
+            return ProdConfig()
+
+
+cnf = FactoryConfig(GlobalConfig().ENV_STATE)()
+print(cnf.__repr__())
+
 @lru_cache()
-def get_settings() -> Settings:
+def get_settings() -> GlobalConfig:
     log.info("Loading config settings from the environment...")
-    return Settings()
+    return FactoryConfig(GlobalConfig().ENV_STATE)()

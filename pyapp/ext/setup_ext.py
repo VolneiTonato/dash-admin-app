@@ -9,9 +9,9 @@ def load_extensions(app: Flask):
     
     settings = get_settings()
     
-    folder = f'{settings.project_name}/ext'
+    folder = f'{settings.PROJECT_NAME}/ext'
     
-    for ext in settings.extensions:
+    for ext in settings.EXTENSIONS:
         file = pathlib.Path(f'{folder}/{ext}.py')
 
         data = str(file)
@@ -34,7 +34,7 @@ def load_entities(app:Flask, args_command=None):
         from pyapp.ext.database import db
         
         
-        folder = f'{settings.project_name}/infra/entities'
+        folder = f'{settings.PROJECT_NAME}/infra/entities'
         
         for entity in pathlib.Path(folder).glob('*.py'):
             

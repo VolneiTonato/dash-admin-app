@@ -1,12 +1,11 @@
 from dash import html, dcc, Dash, Output, Input, no_update
 from dash import strip_relative_path
 from flask import Flask
-from pyapp.config import get_settings
+from pyapp.config import get_settings, BaseModel
 import pathlib
 from importlib import import_module
 from wheezy.routing.regex import RegexRoute
 from wheezy.routing import curly
-from pyapp.config import BaseModel
 from urllib import parse
 from typing import Optional, Any
 from flask_login import logout_user, current_user
@@ -102,7 +101,7 @@ def init_app(app: Flask, dash_app: Dash):
     
     
     def import_layouts():
-        folder_layouts = pathlib.Path(f'{settings.project_name}/{settings.folder_layouts}')
+        folder_layouts = pathlib.Path(f'{settings.PROJECT_NAME}/{settings.FOLDER_LAYOUTS}')
         for ext in folder_layouts.glob('**/layout.py'):
             module_name = str(ext).replace('/', '.').replace('.py', '')
             
@@ -116,7 +115,7 @@ def init_app(app: Flask, dash_app: Dash):
     def get_import_pages():
         
     
-        folder_pages = pathlib.Path(f'{settings.project_name}/{settings.folder_pages}')
+        folder_pages = pathlib.Path(f'{settings.PROJECT_NAME}/{settings.FOLDER_PAGES}')
         pages = []
         for ext in folder_pages.glob('**/*.py'):
         
