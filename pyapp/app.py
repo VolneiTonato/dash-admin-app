@@ -1,7 +1,6 @@
 from flask import Flask
 from datetime import timedelta
 import redis
-import argparse
 from pyapp.ext import setup_ext
 from pyapp.ext.dash import dash_app
 from pyapp.config import get_settings
@@ -37,3 +36,8 @@ def create_app(args_command=None):
     setup_ext.load_entities(app, args_command)
     
     return app
+
+def run_dash(args):
+    app = create_app(args)
+
+    dash_app.run(debug=True, host='0.0.0.0')
