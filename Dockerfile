@@ -14,6 +14,7 @@ RUN mkdir -p /app/pyapp
 WORKDIR /app
 
 COPY requirements.txt /app/
+COPY requirements.prod.txt /app/
 
 RUN python -m venv .venv && \
     . .venv/bin/activate && \
@@ -23,5 +24,7 @@ RUN python -m venv .venv && \
 COPY ./pyapp /app/pyapp/
 COPY ./start_app.sh /app/
 COPY ./main.py /app/
+COPY .env /app/
+COPY .env_docker /app/
 
 CMD [ "sh" , "start_app.sh" ]

@@ -91,6 +91,14 @@ class ProdConfig(GlobalConfig):
     class Config:
         env_prefix: str = "PROD_"
         env_file: str = ".prod"
+        
+class DockerConfig(GlobalConfig):
+    """Production configurations."""
+
+    class Config:
+        env_prefix: str = "DOCKER_"
+        env_file: str = ".env_docker"
+
 
 
 class FactoryConfig:
@@ -105,10 +113,10 @@ class FactoryConfig:
 
         elif self.env_state == "prod":
             return ProdConfig()
+        
+        elif self.env_state == "docker":
+            return DockerConfig()
 
-
-cnf = FactoryConfig(GlobalConfig().ENV_STATE)()
-print(cnf.__repr__())
 
 @lru_cache()
 def get_settings() -> GlobalConfig:
