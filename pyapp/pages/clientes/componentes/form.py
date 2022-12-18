@@ -16,8 +16,6 @@ from typing import Union
 
 class Form:
     
-    ids: Union[FormComponentADDClienteIds, FormComponentEDITClienteIds]
-
     def __init__(self, ctype=EnumTypeForm) -> None:
 
         self.current_data_form: Cliente = None

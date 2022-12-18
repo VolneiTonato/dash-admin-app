@@ -13,8 +13,6 @@ from pyapp.pages.clientes.schema.ids import (
 
 class TableView:
 
-    ids: TableViewComponentClienteIds = None
-
     def __init__(self) -> None:
 
         self.ids = TableViewComponentClienteIds()

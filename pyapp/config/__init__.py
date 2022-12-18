@@ -23,13 +23,14 @@ class GlobalConfig(BaseSettings):
 
     REDIS_HOST: Optional[str] = None
     
+    BASE_URL:str = '/'
+    
     PROJECT_NAME:str  = 'pyapp'
     FOLDER_PAGES = 'pages'
     FOLDER_LAYOUTS = 'layouts'
     EXTENSIONS = ['cache',  'session', 'auth', 'database',  'dash']
     FOLDER_ASSETS: str = f'{getcwd()}/assets'
     LIMIT_QUERY: int = 1500
-    BASE_URL: str = '/'
         
     SQLALCHEMY_DATABASE_URI: str = None
 

@@ -1,4 +1,4 @@
-from dash import html, callback, Output, Input, State
+from dash import html, callback, Output, Input, State, get_relative_path
 import dash_bootstrap_components as dbc
 from dash.development.base_component import Component
 from pyapp.config import themes
@@ -67,7 +67,7 @@ class LayoutPage:
                         is_open=False,
                         navbar=True,
                     ),
-                    dbc.NavItem(dbc.NavLink("sair", href='/logout')),
+                    dbc.NavItem(dbc.NavLink("sair", href=get_relative_path('/logout'))),
                 ],
                 color="primary",
                 class_name='navbar-custom',
@@ -126,8 +126,8 @@ class LayoutPage:
                 dbc.Collapse(
                     dbc.Nav(
                         [
-                            dbc.NavLink("Home", href="/", active="exact"),
-                            dbc.NavLink("Clientes", href="/clientes", active="exact")
+                            dbc.NavLink("Home", href=get_relative_path("/"), active="exact"),
+                            dbc.NavLink("Clientes", href=get_relative_path("/clientes"), active="partial")
                         ],
                         vertical=True,
                         pills=True,

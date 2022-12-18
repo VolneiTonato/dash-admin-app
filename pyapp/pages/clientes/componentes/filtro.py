@@ -29,10 +29,6 @@ class SessionForm(BaseModel):
 
 class Filtro:
     
-    
-    
-    ids: FitroComponentClienteIds
-
     def __init__(self) -> None:
         
         self.ids = FitroComponentClienteIds()

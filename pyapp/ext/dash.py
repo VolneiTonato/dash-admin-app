@@ -12,7 +12,7 @@ dash_app = Dash(
     meta_tags=[
         {"name": "viewport", "content": "width=device-width, initial-scale=1"}
     ],
-    url_base_pathname='/'
+    url_base_pathname='/',
 )
 
 def init_app(app: Flask):
