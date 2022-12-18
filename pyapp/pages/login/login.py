@@ -1,26 +1,32 @@
-from dash import html, callback, Output, State, Input, dcc, no_update
+from typing import List
+from dash import html, callback, Output, State, Input, dcc, no_update, get_relative_path
 from dash.exceptions import PreventUpdate
 from pyapp.utils.styled_components_util import StyleComponentUtil
 import dash_bootstrap_components as dbc
 from pyapp.config import themes
 from .schema.ids import PageLoginIds
 from pyapp.ext.auth import login
+from pyapp.core.pages.base import BasePage
 
 
-class Page:
-
-    ids: PageLoginIds = None
+class Page(BasePage):
 
     def __init__(self) -> None:
         self.ids = PageLoginIds()
         self.events()
-
+        
     @property
-    def path(self):
-        return '/login'
+    def template_path(self) -> List[str]:
+        return [
+            get_relative_path('/login')
+        ]
+
 
     @property
     def title(self):
+        return 'Login Page'
+    
+    def __repr__(self) -> str:
         return 'Login Page'
 
     def load_data(self):
@@ -132,7 +138,7 @@ class Page:
                         if not is_auth:
                             raise Exception('Erro ao autenticar')
 
-                        return '/', {}, '', {}
+                        return get_relative_path('/'), {}, '', {}
                     except Exception as ex:
                         raise Exception(ex)
 

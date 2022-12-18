@@ -1,5 +1,5 @@
 from typing import List
-from dash import html, dcc, callback, Input, Output, State, no_update, ctx
+from dash import html, dcc, callback, Input, Output, State, no_update, ctx, get_relative_path
 from dash.exceptions import PreventUpdate
 from pyapp.core.decorator import login_required
 import dash_bootstrap_components as dbc
@@ -7,14 +7,11 @@ from .componentes.table_view import TableView
 from .componentes.form import Form
 from .componentes.filtro import Filtro
 from .schema.ids import PageClienteIds, EnumTypeForm
-from pyapp.infra.entities.cliente import Cliente
-
+from pyapp.core.pages.base import BasePage
 
 
 @login_required
-class Page:
-
-    ids: PageClienteIds = None
+class Page(BasePage):
 
     def __init__(self) -> None:
 
@@ -32,13 +29,12 @@ class Page:
 
     @property
     def template_path(self):
-        # return ['/']
-        raise NotImplementedError
+        return [
+            get_relative_path('/clientes'), 
+            get_relative_path('/clientes/{id:int}')
+        ]
 
-    @property
-    def path(self):
-        return '/clientes'
-
+   
     @property
     def parent_layout(self):
         return 'LAYOUT_PAGE_APP'
@@ -93,7 +89,6 @@ class Page:
         )
 
     def layout(self, *args, **kwargs):
-
         storage_state = html.Div(
             [
                 dcc.Store(id=self.ids.store_filter_data, storage_type='session'),
@@ -125,6 +120,7 @@ class Page:
             html.Button(id=self.ids.page_onload, style={'display': 'none'}),
             html.Br(),
             cards_buttons,
+            self.breadcrumb,
             dbc.Row(
                 dbc.Col(
                     [

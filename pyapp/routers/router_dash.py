@@ -1,8 +1,9 @@
 from dash import html, dcc, Dash, Output, Input, no_update
-from dash import strip_relative_path
+from dash import strip_relative_path, get_relative_path
 from flask import Flask
 from pyapp.config import get_settings, BaseModel
 import pathlib
+import flask
 from importlib import import_module
 from wheezy.routing.regex import RegexRoute
 from wheezy.routing import curly
@@ -10,6 +11,7 @@ from urllib import parse
 from typing import Optional, Any
 from flask_login import logout_user, current_user
 from typing import List, Tuple
+
 
 
 _ID_CONTENT = "_custom_pages_content"
@@ -52,7 +54,6 @@ page_container = html.Div(
         html.Div(id=ID_DUMMY),
     ])
 
-    
 def get_layout(key):
     for layouts in _LAYOUTS_REGISTRY:
         if layouts[0] == key:
@@ -61,20 +62,12 @@ def get_layout(key):
     raise NotFoundLayoutException
 
 def init_app(app: Flask, dash_app: Dash):
-    
     settings = get_settings()
 
-    def url_query_string_to_dict(self, url):
+    def url_query_string_to_dict(url):
             parse_data = parse.urlparse(url)
                     
-            return dict(parse.parse_qsl(parse_data.query))
-        
-        
-    def param_pathname_to_args(self, data):
-        try:
-            return data.values()
-        except:
-            return ()
+            return dict(parse.parse_qsl(parse_data.query)) or {}
         
     
     def component_not_pages():
@@ -83,21 +76,6 @@ def init_app(app: Flask, dash_app: Dash):
     
     def component_not_found():
         return html.Div([html.H1('Não foi localizar a página desejada!', style={'color': 'red'})])
-    
-    def resolve_url(key, url):
-    
-        path = parse.urlparse(url).path
-
-        r  = RegexRoute(curly.convert(key))
-
-        hander, kwargs =  r.match_no_kwargs(path)
-        
-        # if len(kwargs):
-            # return UrlTemplate.link(path), kwargs
-        # return None
-        
-    def get_page(page_id:str):
-        pass
     
     
     def import_layouts():
@@ -113,8 +91,7 @@ def init_app(app: Flask, dash_app: Dash):
 
     
     def get_import_pages():
-        
-    
+
         folder_pages = pathlib.Path(f'{settings.PROJECT_NAME}/{settings.FOLDER_PAGES}')
         pages = []
         for ext in folder_pages.glob('**/*.py'):
@@ -130,13 +107,10 @@ def init_app(app: Flask, dash_app: Dash):
         return pages
     
     class Router():
-        _is_running : bool = False
-        _pages = []
-        
-        
-        
-        
+                
         def __init__(self) -> None:
+            self._pages = []
+            self._is_running = False
             self.router()
         
         
@@ -165,7 +139,36 @@ def init_app(app: Flask, dash_app: Dash):
                 return current_user.is_authenticated
             except:
                 return False
-                
+            
+        def get_page_and_kwargs(self, pathname):
+            relative = strip_relative_path(get_relative_path(pathname))
+            current_page = None
+            kwargs_page = {}
+            for page in self._pages:
+                try:
+                    current_page = next(filter(lambda p : relative == p.path.strip('/') if p.path else None, self._pages))
+                except:
+                    pass
+                if not current_page:
+                    for _path in page.template_path:
+                        if relative == _path.strip('/'):
+                            page.path = _path
+                            current_page  = page
+                            
+                            break
+                        
+                    if not current_page:
+                        for _path in page.template_path:
+                            r = RegexRoute(curly.convert(_path))
+                        
+                            if r:
+                                hander, kwargs_page = r.match_no_kwargs(pathname)
+                                if kwargs_page:
+                                    page.path = pathname
+                                    current_page = page
+                                    break
+                            
+            return (current_page, kwargs_page or {})
   
         def events(self):
 
@@ -182,37 +185,45 @@ def init_app(app: Flask, dash_app: Dash):
             def update(pathname, search):
 
                 layout = no_update
+                
                 data = no_update
+                
                 properties = {}
-                
-                
+
                 try:
                     if not len(self._pages):
                         raise NotPagesLoadException()
                     
-                    current_page = None
+                    kwargs_query_page = {}
                     
-                    relative = strip_relative_path(pathname)
+                    args_page = {}
                     
-                    for page in self._pages:
+                    if pathname != '' and search != '':
+                        full_url = f'{pathname}{search}'
 
-                        path  = page.path
-                         
-                        if relative == path.strip('/'):
-                            current_page = page
-                            break
+                        kwargs_query_page = url_query_string_to_dict(full_url)
+                    
+                    current_page = None
+                   
+                    relative = strip_relative_path(pathname)
+
+                    current_page, args_page = self.get_page_and_kwargs(pathname)
+                    
                     
                     if not current_page and relative != 'logout':
                         raise NotFoundPageException()
 
                     
+     
                     is_auth = self._is_auth()
                     
                     if current_page:
+                        path = current_page.path
+                        
                         properties  = dir(current_page)
                         
                     
-                        layout = current_page.layout()
+                        layout = current_page.layout(*args_page.values(), **kwargs_query_page)
                         
                         if 'parent_layout' in properties:
                             layout = get_layout(current_page.parent_layout).layout(layout)
@@ -221,19 +232,19 @@ def init_app(app: Flask, dash_app: Dash):
                     
 
                     if relative in ['login'] and is_auth:
-                        path = '/'
+                        path = get_relative_path('/')
                         layout = no_update
                         data = no_update
                         
                     elif relative == 'logout':
                         if logout_user():
-                            path = '/login'
+                            path = get_relative_path('/login')
                             layout = no_update
                             data = no_update
                 
                     elif 'login_required' in properties and not relative in ['login', 'logout']:
-                        if not current_user.is_authenticated:
-                            path = '/login'
+                        if not is_auth:
+                            path = get_relative_path('/login')
                             layout = no_update
                             data = no_update
 
